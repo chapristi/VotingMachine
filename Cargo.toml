@@ -1,0 +1,12 @@
+[package]
+name = "c1"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.95"
+async-trait = "0.1.87"
+clap = { version = "4.5.29", features = ["derive"] }
+serde = { version = "1.0.218", features = ["derive"] }
+serde_json = "1.0.140"
+tokio = { version = "1.43.0", features = ["full"] }
