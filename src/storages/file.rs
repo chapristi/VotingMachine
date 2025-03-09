@@ -4,7 +4,8 @@ use tokio::{
 	fs::File,
 	io::{AsyncReadExt, AsyncWriteExt},
 
-};use std::collections::BTreeMap as Map;
+};
+use std::collections::BTreeMap as Map;
 use std::collections::BTreeSet as Set;
 use crate::domain::Candidate;
 use crate::domain::Score;

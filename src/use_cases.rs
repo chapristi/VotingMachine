@@ -100,16 +100,7 @@ mod tests {
             voter: String::from("Louis"),
             candidate: String::from("")
         };
-        let mut correct_scores = BTreeMap::new();
-		correct_scores.insert(Candidate(String::from("Louis")), Score(0));
-
-        let correct_scoreboard = Scoreboard{
-            
-                scores: correct_scores,
-                blank_score: Score(1),
-                invalid_score: Score(0),
-            
-        };
+		
         let mut correct_scores = BTreeMap::new();
 		correct_scores.insert(Candidate(String::from("Louis")), Score(0));
 

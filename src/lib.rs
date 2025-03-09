@@ -4,3 +4,4 @@ mod domain;
 mod storage;
 mod storages;
 mod use_cases;
+mod interfaces;
