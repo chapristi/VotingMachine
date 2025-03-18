@@ -1,4 +1,8 @@
+
+use std::sync::Arc;
+
 use serde::Deserialize;
+use tokio::sync::RwLock;
 
 use crate::{domain::{BallotPaper, Candidate, VoteOutcome, Voter, VotingMachine}, storage::Storage};
 
@@ -23,31 +27,31 @@ impl From<VoteForm> for BallotPaper{
 
 }
 
+#[derive(Clone)]
 pub struct VotingController<Store>{
-    store: Store,
+    store: Arc<RwLock<Store>>,
 }
-
-impl <Store: Storage> VotingController<Store> {
-    pub fn new (store: Store)-> Self{
-        Self{
-            store: store
-        }
+impl<Store: Storage> VotingController<Store> {
+    pub fn new(store: Store) -> Self {
+        Self { store: Arc::new(RwLock::new(store)) }
     }
-    pub async fn vote(&mut self, vote_form: VoteForm) -> anyhow::Result<VoteOutcome> {
-        let mut voting_machine = self.store.get_voting_machine().await?;
-    
+
+    pub async fn vote(&self, vote_form: VoteForm) -> anyhow::Result<VoteOutcome> {
+        let mut store = self.store.write().await;
+        
+        let mut voting_machine = store.get_voting_machine().await?;
+
         let outcome = voting_machine.vote(BallotPaper::from(vote_form));
-    
-        self.store.put_voting_machine(voting_machine).await?;
-    
+
+        store.put_voting_machine(voting_machine).await?;
+
         Ok(outcome)
     }
-    
-    pub async fn get_voting_machine (&self)-> anyhow::Result<VotingMachine>
-    {
-        self.store.get_voting_machine().await
-    }
 
+    pub async fn get_voting_machine(&self) -> anyhow::Result<VotingMachine> {
+        let store = self.store.read().await;
+        store.get_voting_machine().await
+    }
 }
 
 #[cfg(test)]
@@ -63,7 +67,9 @@ mod tests {
         let candidates = vec![Candidate(String::from("Louis"))];
         let voting_machine: VotingMachine = VotingMachine::new(candidates);
         let store = MemoryStore::new(voting_machine).await.expect("probleme lors de l'instanciation de la memoire");
-        let mut voting_controller  = VotingController::new(store);
+
+        
+        let voting_controller  = VotingController::new(store);
 
 
         let vote_form =  VoteForm{
@@ -93,7 +99,7 @@ mod tests {
         let candidates = vec![Candidate(String::from("Louis"))];
         let voting_machine: VotingMachine = VotingMachine::new(candidates);
         let store = MemoryStore::new(voting_machine).await.expect("probleme lors de l'instanciation de la memoire");
-        let mut voting_controller  = VotingController::new(store);
+        let voting_controller  = VotingController::new(store);
 
 
         let vote_form =  VoteForm{
@@ -124,7 +130,7 @@ mod tests {
         let candidates = vec![Candidate(String::from("Louis"))];
         let voting_machine: VotingMachine = VotingMachine::new(candidates);
         let store = MemoryStore::new(voting_machine).await.expect("probleme lors de l'instanciation de la memoire");
-        let mut voting_controller  = VotingController::new(store);
+        let voting_controller: VotingController<_>  = VotingController::new(store);
 
 
         let vote_form =  VoteForm{
@@ -154,7 +160,7 @@ mod tests {
         let candidates = vec![Candidate(String::from("Louis"))];
         let voting_machine: VotingMachine = VotingMachine::new(candidates.clone());
         let store = MemoryStore::new(voting_machine).await.expect("probleme lors de l'instanciation de la memoire");
-        let mut voting_controller  = VotingController::new(store);
+        let voting_controller  = VotingController::new(store);
 
 
         let vote_form =  VoteForm{

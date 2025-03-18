@@ -30,7 +30,7 @@ fn display_menu(lexicon: &Lexicon) -> String {
 
 pub async fn handle_line<Store: Storage>(
     line: &str, 
-    controller: &mut VotingController<Store>,
+    controller: &VotingController<Store>,
     lexicon: &Lexicon
 ) -> anyhow::Result<String> {
     let mut words = line.trim().split_whitespace();
@@ -66,9 +66,7 @@ pub async fn handle_line<Store: Storage>(
 mod tests {
     use std::vec;
 
-    use crate::{configuration::Language, domain::{Candidate, VotingMachine}, storages::memory::MemoryStore};
-    use std::collections::BTreeMap as Map;
-    use std::collections::BTreeSet as Set;
+    use crate::{domain::{Candidate, VotingMachine}, interfaces::lexicons::french::FRENCH, storages::memory::MemoryStore};
     use super::*;
 
     #[tokio::test]
@@ -80,7 +78,7 @@ mod tests {
         let voting_machine = VotingMachine::new(candidates);
 
         let store = MemoryStore::new(voting_machine).await.expect("erreur lors de la creation de la memoire");
-        let lexicon: Lexicon = Lexicon::french();
+        let lexicon: Lexicon = FRENCH;
          
         
         let mut controller  = VotingController::new(store);
@@ -104,7 +102,7 @@ Il y a 4 commandes disponibles :
         let voting_machine = VotingMachine::new(candidates);
 
         let store = MemoryStore::new(voting_machine).await.expect("erreur lors de la creation de la memoire");
-        let lexicon: Lexicon = Lexicon::french();
+        let lexicon: Lexicon = FRENCH;
          
         
         let mut controller  = VotingController::new(store);
@@ -122,7 +120,7 @@ Il y a 4 commandes disponibles :
         let voting_machine = VotingMachine::new(candidates);
 
         let store = MemoryStore::new(voting_machine).await.expect("erreur lors de la creation de la memoire");
-        let lexicon: Lexicon = Lexicon::french();
+        let lexicon: Lexicon = FRENCH;
          
         
         let mut controller  = VotingController::new(store);
@@ -140,7 +138,7 @@ Il y a 4 commandes disponibles :
         let voting_machine = VotingMachine::new(candidates);
 
         let store = MemoryStore::new(voting_machine).await.expect("erreur lors de la creation de la memoire");
-        let lexicon: Lexicon = Lexicon::french();
+        let lexicon: Lexicon = FRENCH;
          
         
         let mut controller  = VotingController::new(store);
@@ -159,7 +157,7 @@ Il y a 4 commandes disponibles :
         let voting_machine = VotingMachine::new(candidates);
 
         let store = MemoryStore::new(voting_machine).await.expect("erreur lors de la creation de la memoire");
-        let lexicon: Lexicon = Lexicon::french();
+        let lexicon: Lexicon = FRENCH;
          
         
         let mut controller  = VotingController::new(store);
@@ -177,7 +175,7 @@ Il y a 4 commandes disponibles :
         let voting_machine = VotingMachine::new(candidates);
 
         let store = MemoryStore::new(voting_machine).await.expect("erreur lors de la creation de la memoire");
-        let lexicon: Lexicon = Lexicon::french();
+        let lexicon: Lexicon = FRENCH;
          
         
         let mut controller  = VotingController::new(store);
@@ -194,8 +192,8 @@ Il y a 4 commandes disponibles :
         candidates.push(Candidate(String::from("Louis")));
         let voting_machine = VotingMachine::new(candidates);
 
-        let store = MemoryStore::new(voting_machine).await.expect("erreur lors de la creation de la memoire");
-        let lexicon: Lexicon = Lexicon::french();
+        let store: MemoryStore = MemoryStore::new(voting_machine).await.expect("erreur lors de la creation de la memoire");
+        let lexicon: Lexicon = FRENCH;
          
         
         let mut controller  = VotingController::new(store);

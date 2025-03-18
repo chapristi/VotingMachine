@@ -1,8 +1,8 @@
 use crate::interfaces::lexicon::Lexicon;
 
-impl Lexicon {
-    pub fn english() -> Self {
-        Self {
+pub const ENGLISH : Lexicon = Lexicon{
+   
+    
             blank: "Blank",
             candidate: "Candidate",
             voter: "Voter",
@@ -21,6 +21,6 @@ There are 4 available commands:
             invalid_command_vote: "Invalid 'voter' command, please specify a voter.",
             unokwn_command: "Unknown command. Please enter a valid command.",
             scores: "Scores",
-        }
-    }
-}
+        
+};
+

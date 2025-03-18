@@ -13,6 +13,8 @@ use crate::domain::Scoreboard;
 use crate::domain::Voter;
 use crate::{domain::VotingMachine, storage::Storage};
 use crate::domain::AttendenceSheet;
+
+#[derive(Clone)]
 pub struct FileStore{
     filepath: String
 }
